@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "828515421950",
+    "project_id": "interactive-calendar-eba76",
+    "storage_bucket": "interactive-calendar-eba76.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:828515421950:android:6bc2118b6f29e56e9e9faf",
+        "android_client_info": {
+          "package_name": "com.example.interactive_calendar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQS8iq27dQ5e3BO7nU_JoinTzeB6_i66Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

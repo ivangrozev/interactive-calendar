@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:interactive_calendar/services/auth_service.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -9,14 +10,24 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
-  void _login() {
-    // Add login logic here
-    final email = emailController.text;
-    final password = passwordController.text;
+  void _login(BuildContext context) {
+    final authService = AuthService();
 
+    final email = _emailController.text;
+    final password = _passwordController.text;
+
+    try {
+      authService.signInWithEmailPassword(email, password);
+    } catch (e) {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: Text(e.toString()),
+              ));
+    }
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Logging in with $email')),
     );
@@ -31,16 +42,17 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           children: [
             TextField(
-              controller: emailController,
+              controller: _emailController,
               decoration: const InputDecoration(labelText: 'Email'),
             ),
             TextField(
-              controller: passwordController,
+              controller: _passwordController,
               decoration: const InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
             const SizedBox(height: 20),
-            ElevatedButton(onPressed: _login, child: const Text('Login')),
+            ElevatedButton(
+                onPressed: () => _login(context), child: const Text('Login')),
             TextButton(
               onPressed: () {
                 Navigator.push(

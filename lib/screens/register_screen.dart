@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:interactive_calendar/services/auth_service.dart';
 import 'package:interactive_calendar/utils/password_controller.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -13,10 +14,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void _register() {
+  void _register() async {
     // Add register logic here
     final name = nameController.text;
     final email = emailController.text;
+    final password = passwordController.text;
+    AuthService auth = AuthService();
+    try {
+      await auth.createNewUser(name, email, password);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Registering $name with $email')),

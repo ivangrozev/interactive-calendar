@@ -13,24 +13,31 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _login(BuildContext context) {
+  void _login(BuildContext context) async {
     final authService = AuthService();
 
     final email = _emailController.text;
     final password = _passwordController.text;
 
     try {
-      authService.signInWithEmailPassword(email, password);
+      await authService.signInWithEmailPassword(email, password);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Logging in with $email'),
+            duration: const Duration(seconds: 1),
+          ),
+        );
+      }
     } catch (e) {
-      showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-                title: Text(e.toString()),
-              ));
+      if (context.mounted) {
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: Text(e.toString()),
+                ));
+      }
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Logging in with $email')),
-    );
   }
 
   @override
@@ -60,7 +67,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   MaterialPageRoute(builder: (_) => const RegisterScreen()),
                 );
               },
-              child: const Text('Don\'t have an account? Register here'),
+              child: Row(
+                children: [
+                  const Text('Don\'t have an account?'),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const RegisterScreen()));
+                      },
+                      child: const Text(
+                        'Register here!',
+                        style: TextStyle(color: Colors.green),
+                      ))
+                ],
+              ),
             ),
           ],
         ),

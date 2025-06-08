@@ -14,28 +14,40 @@ class AuthService {
     }
   }
 
+  bool isUserLoggedIn() {
+    return _auth.currentUser != null;
+  }
+
+  String getCurrentUserId() {
+    return _auth.currentUser!.uid;
+  }
+
   String getUserName() {
     return _auth.currentUser!.displayName!;
   }
 
-  Future<void> logOut() {
-    try {
-      return _auth.signOut();
-    } on FirebaseAuthException catch (e) {
-      throw Exception(e.code);
-    }
+   String getUserEmail() {
+    return _auth.currentUser!.email!;
   }
 
-  Future<UserCredential> createNewUser(
-      String name, String email, String password) async {
-    late Future<UserCredential> ucr;
+
+  Future<void> logout() {
     try {
-      ucr = _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      _auth.currentUser?.updateProfile(displayName: name);
+      return _auth.signOut();
     } on FirebaseAuthException {
       rethrow;
     }
-    return ucr;
+  }
+
+  Future<void> createNewUser(String name, String email, String password) async {
+    try {
+      _auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((newUser) {
+        newUser.user!.updateProfile(displayName: name);
+      });
+    } on FirebaseAuthException {
+      rethrow;
+    }
   }
 }

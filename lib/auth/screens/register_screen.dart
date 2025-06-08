@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:interactive_calendar/services/auth_service.dart';
+import 'package:interactive_calendar/data/repositories/auth/auth_repository_remote.dart';
 import 'package:interactive_calendar/utils/password_controller.dart';
+import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -10,28 +11,9 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
-  void _register() async {
-    // Add register logic here
-    final name = nameController.text;
-    final email = emailController.text;
-    final password = passwordController.text;
-    AuthService auth = AuthService();
-    try {
-      await auth.createNewUser(name, email, password);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Registering $name with $email')),
-    );
-  }
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,21 +24,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Column(
           children: [
             TextField(
-              controller: nameController,
+              controller: _nameController,
               decoration: const InputDecoration(labelText: 'Name'),
             ),
             TextField(
-              controller: emailController,
+              controller: _emailController,
               decoration: const InputDecoration(labelText: 'Email'),
             ),
             TextFormField(
-              controller: passwordController,
+              controller: _passwordController,
               decoration: const InputDecoration(labelText: 'Password'),
               obscureText: true,
               validator: PasswordController.validate,
             ),
             const SizedBox(height: 20),
-            ElevatedButton(onPressed: _register, child: const Text('Register')),
+            ElevatedButton(
+                onPressed: () {
+                  Provider.of<AuthRepositoryRemote>(context, listen: false)
+                      .createNewUser(
+                          _nameController.text,
+                          _emailController.text,
+                          _passwordController.text,
+                          context);
+                },
+                child: const Text('Register')),
           ],
         ),
       ),

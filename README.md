@@ -1,5 +1,10 @@
 # interactive_calendar
 
+All the changes are in develop branch
+Flutter version 3.29.3
+Dart version 3.7.2
+Java version 21.0.6
+
 A new Flutter project.
 
 ## Getting Started
